@@ -76,6 +76,7 @@ container.register('showD0PostsLogic', asClass(require('../logic/show-d0-posts-l
 container.register('fetchStringLogic', asClass(require('../logic/fetchStringLogic'), getScope()));
 container.register('addStringLogic', asClass(require('../logic/addStringLogic'), getScope()));
 container.register('updateStringLogic', asClass(require('../logic/updateStringLogic'), getScope()));
+container.register('getTranslationsForLabelLogic', asClass(require('../logic/getTranslationsForLabelLogic'), getScope()));
 //-----------------------------------------------
 
 
@@ -92,6 +93,7 @@ container.register('getTranslationsApi', asClass(require('../api/v1/getTranslati
 container.register('createTranslationApi', asClass(require('../api/v1/addTranslations'), getScope()));
 container.register('updateTranslationApi', asClass(require('../api/v1/updateTranslations'), getScope()));
 container.register('deleteTranslationApi', asClass(require('../api/v1/deleteTranslations'), getScope()));
+container.register('getTranslationsForLabelApi', asClass(require('../api/v1/getTranslationsForLabel'), getScope()));
 
 container.register('requestType81', asClass(require('../api/route/requestType81'), getScope()));
 

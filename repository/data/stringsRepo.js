@@ -44,6 +44,16 @@ class StringsRepo {
         return res;
     }
 
+    async getStringsByLabel(label) {
+        const query = {
+            sql: `SELECT * FROM ${this.tableName} WHERE label ="${label}"`
+        };
+
+        const res = await this.spannerHelper.read(this.tableName, { query: query });
+        console.log(res);
+        return res.results || [];
+    }
+
     async getAllStrings(searchString, offset) {
         let query;
         const offsetQuery = offset === null ? '' : 'AND added_on < ${offset}'
