@@ -21,7 +21,7 @@ const server = (container) => {
 			limit: '10mb',
 			strict: false
 		}));
-		app.use(promScripts.promMid({ customLabels: { group: 'l10-service' } }));
+		app.use(promScripts.promMid({ customLabels: { group: 'l10n-component-service' } }));
 
 		app.use((req, res, next) => {
 			req.container = container.createScope();
@@ -30,14 +30,14 @@ const server = (container) => {
 
 
 		app.get('/health', (req, res) => {
-			return res.send('Hello World from l10 Service');
+			return res.send('Hello World from l10n-component-service Service');
 		});
 
 		// Deprecated routes
 		app.use('/', router);
 
 		// API routes
-		app.use('/l10-service', router);
+		app.use('/l10n-component-service', router);
 
 
 		// Log Unhandled exceptions

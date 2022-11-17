@@ -64,8 +64,6 @@ container.register('postSentRedis', asClass(require('../repository/cache/postSen
 
 // -------------------- REPO -------------------------
 container.register('followFeedRepoV2', asClass(require('../repository/data/followFeedRepoV2'), getScope()));
-container.register('labelsRepo', asClass(require('../repository/data/labelsRepo'), getScope()));
-container.register('translationsRepo', asClass(require('../repository/data/translationsRepo'), getScope()));
 
 
 //------------------ LOGIC ----------------------
@@ -78,17 +76,6 @@ container.register('showD0PostsLogic', asClass(require('../logic/show-d0-posts-l
 //------------------ API -------------------------------
 // Create API after everything
 
-//labels APis
-container.register('getLabelsApi', asClass(require('../api/v1/getLabel'), getScope()));
-container.register('createLabelApi', asClass(require('../api/v1/createLabel'), getScope()));
-container.register('deleteLabelApi', asClass(require('../api/v1/deleteLabel'), getScope()));
-
-//translations APIs
-container.register('getTranslationsApi', asClass(require('../api/v1/getTranslations'), getScope()));
-container.register('createTranslationApi', asClass(require('../api/v1/addTranslations'), getScope()));
-container.register('updateTranslationApi', asClass(require('../api/v1/updateTranslations'), getScope()));
-container.register('deleteTranslationApi', asClass(require('../api/v1/deleteTranslations'), getScope()));
-
 container.register('requestType81', asClass(require('../api/route/requestType81'), getScope()));
 
 container.register('getFollowFeedApi', asClass(require('../api/v1/getFollowFeed'), getScope()));
@@ -96,12 +83,6 @@ container.register('getFollowFeedApi', asClass(require('../api/v1/getFollowFeed'
 container.register('getFollowFeedStatusApi', asClass(require('../api/v1/getFollowFeedStatus'), getScope()));
 
 container.register('getLangList', asClass(require('../api/v1/getLangList'), getScope()));
-
-container.register('getFollowFeedApiV2', asClass(require('../api/v2/getFollowFeed'), getScope()));
-
-container.register('addPostsInFollowFeedApi', asClass(require('../api/v2/addPostsInFollowFeed'), getScope()));
-
-container.register('addToFollowFeedAPI', asClass(require('../api/v2/addToFollowFeed'), getScope()));
 //------------------------------------------------------
 
 container.register('container', asValue(container));
