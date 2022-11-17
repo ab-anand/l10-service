@@ -16,11 +16,14 @@ class LabelsRepo {
      * @param {Object} labelsObj labelsObj
      * @memberOf LabelsRepo
      */
-    async createLabel(labelsObj) {
-        labelsObj.id = uuidv4();
+    async add(labelsObj) {
         //labelsObj.createdAt = Date.now()
         console.log({labelsObj});
-        const insertObject = JSON.parse(JSON.stringify(labelsObj));
+        const result = await this.getLabelByName(labelsObj.name);
+        if (result && result.results.length > 0) {
+            throw {msg: "Already exists"}
+        }
+        labelsObj.id = uuidv4();
         const query = {
             sql: `INSERT ${this.tableName} (${Object.keys(labelsObj).join(',')}) VALUES (${Object.values(labelsObj).map(elem => JSON.stringify(elem)).join(',')})`
         };
@@ -32,12 +35,12 @@ class LabelsRepo {
 
     /**
      *
-     * @param {String} labelId labelId
+     * @param {String} name name
      * @memberOf LabelsRepo
      */
-    async getLabel(labelId) {
+    async getLabelByName(name) {
         let query = {
-            sql: `SELECT * FROM ${this.tableName} WHERE labelId = "${labelId}"`
+            sql: `SELECT * FROM ${this.tableName} WHERE name = "${name}"`
         };
         const res = await this.spannerHelper.read(this.tableName, { query });
         console.log(res)

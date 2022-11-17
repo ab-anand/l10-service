@@ -1,11 +1,11 @@
 const _ = require('lodash');
 
-class CreateLabel {
-    constructor(logHelper, helper, labelsRepo, constants) {
+class DeleteTranslations {
+    constructor(logHelper, helper, translationsRepo, constants) {
         this.logHelper = logHelper;
         this.helper = helper;
         this.constants = constants;
-        this.labelsRepo = labelsRepo;
+        this.translationsRepo = translationsRepo;
     }
 
     async handleRequest(req, res) {
@@ -16,17 +16,15 @@ class CreateLabel {
             return this.helper.writeResponse({ code: 400, msg: 'Missing user id in header' }, null, res);
         }
 
-        const payload = req.body;
-        const entries = payload.entries;
-        console.log(entries)
+        const {key, locale} = req.params;
         try {
-            await this.labelsRepo.add(entries[0]);
+            await this.translationsRepo.delete(key, locale);
             return this.helper.writeResponse(null, { msg: "success" }, res);
         } catch (err) {
             console.log(err)
-            return this.helper.writeResponse({ code: 500, msg: err.msg || 'Internal Server Error' }, null, res);
+            return this.helper.writeResponse({ code: 500, msg: 'Internal Server Error' }, null, res);
         }
     }
 }
 
-module.exports = CreateLabel;
+module.exports = DeleteTranslations;

@@ -15,6 +15,23 @@ router.delete('/label/:labelId', (req, res, next) => {
 	req.container.resolve('deleteLabelApi').handleRequest(req, res).catch(next);
 });
 
+//translations APIs
+router.get('/translations/:key', (req, res, next) => {
+	req.container.resolve('getTranslationsApi').handleRequest(req, res).catch(next);
+});
+
+router.post('/translation', (req, res, next) => {
+	req.container.resolve('createTranslationApi').handleRequest(req, res).catch(next);
+});
+
+router.put('/translation', (req, res, next) => {
+	req.container.resolve('updateTranslationApi').handleRequest(req, res).catch(next);
+});
+
+router.delete('/translations/:key/:locale', (req, res, next) => {
+	req.container.resolve('deleteTranslationApi').handleRequest(req, res).catch(next);
+});
+
 router.get('/followFeed', (req, res, next) => {
 	req.container.resolve('getFollowFeedApi').handleRequest(req, res).catch(next);
 });
