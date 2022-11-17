@@ -12,9 +12,6 @@ class GetLabel {
 		const userHeaderKey = this.constants.userAuthorizedHeaderKey;
 		const userId = req.get(userHeaderKey);
 
-		if (!userId) {
-			return this.helper.writeResponse({ code: 400, msg: 'Missing user id in header' }, null, res);
-		}
 		const searchString = req.query.q;
 
 		try {
