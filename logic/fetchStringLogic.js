@@ -6,13 +6,15 @@ class FetchStringLogic {
         this.stringsRepo = stringsRepo;
     }
 
-    async fetchString(sentence, limit, offset) {
-        const data = await this.stringsRepo.getAllStrings(sentence, offset);
+    async fetchString(key, limit, offset) {
+        const data = await this.stringsRepo.getAllStrings(key, limit, offset);
         let responseMap = new Map();
         let keyMap = new Map();
         let labelArrMap = new Map();
         for (const row of data) {
-            // var labelArr;
+            if (row.label == null) {
+                row.label = '';
+            }
             if (!keyMap.has(row.key)) {
                 var labelArr = [row.label];
                 labelArrMap.set(row.key, labelArr);

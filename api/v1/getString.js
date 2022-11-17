@@ -9,7 +9,7 @@ class GetString {
 
     async handleRequest(req, res) {
         const offset = req.query.offset ? req.query.offset : null;
-        const sentence = req.query.key;
+        const key = req.query.key;
         const limit = req.query.limit ? Number(req.query.limit): 10;
         // if (!sentence) {
         //     const err = { code: 400, msg: 'Missing key in query' };
@@ -17,7 +17,7 @@ class GetString {
         //     return this.helper.writeResponse(err, null, res);
         // }
         try {
-            const response = await this.fetchStringLogic.fetchString(sentence, limit, offset);
+            const response = await this.fetchStringLogic.fetchString(key, limit, offset);
             // const data = await this.translationCategory.getStrings(sentence, limit);
             // const lastAddedOn = data.length >= limit ? data[limit - 1].added_on: null ;
             // const response = {

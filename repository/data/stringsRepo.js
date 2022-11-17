@@ -54,16 +54,18 @@ class StringsRepo {
         return res.results || [];
     }
 
-    async getAllStrings(searchString, offset) {
+    async getAllStrings(searchString, limit, offset) {
         let query;
-        const offsetQuery = offset === null ? '' : 'AND added_on < ${offset}'
+
         if (searchString) {
+            const offsetQuery = offset === null ? '' : `AND added_on < ${offset}`
             query = {
-                sql: `SELECT * FROM ${this.tableName} WHERE sentence like "%${searchString}%" ${offsetQuery} ORDER BY added_on DESC`
+                sql: `SELECT * FROM ${this.tableName} WHERE sentence like "%${searchString}%" ${offsetQuery} ORDER BY added_on DESC LIMIT ${limit}`
             };
         } else {
+            const offsetQuery = offset === null ? '' : `WHERE added_on < ${offset}`
             query = {
-                sql: `SELECT * FROM ${this.tableName} ORDER BY added_on DESC`
+                sql: `SELECT * FROM ${this.tableName} ${offsetQuery} ORDER BY added_on DESC LIMIT ${limit}`
             };
         }
         console.log(query);
