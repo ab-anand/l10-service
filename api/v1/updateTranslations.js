@@ -1,11 +1,9 @@
-const _ = require('lodash');
-
-class CreateLabel {
-	constructor(logHelper, helper, labelsRepo, constants) {
+class UpdateTranslations {
+	constructor(logHelper, helper, translationsRepo, constants) {
 		this.logHelper = logHelper;
 		this.helper = helper;
 		this.constants = constants;
-		this.labelsRepo = labelsRepo;
+		this.translationsRepo = translationsRepo;
 	}
 
 	async handleRequest(req, res) {
@@ -17,16 +15,15 @@ class CreateLabel {
 		}
 
 		const payload = req.body;
-		const entries = payload.entries;
-		console.log(entries);
+		console.log(payload);
 		try {
-			await this.labelsRepo.add(entries[0]);
+			await this.translationsRepo.update(payload);
 			return this.helper.writeResponse(null, { msg: 'success' }, res);
 		} catch (err) {
 			console.log(err);
-			return this.helper.writeResponse({ code: 500, msg: err.msg || 'Internal Server Error' }, null, res);
+			return this.helper.writeResponse({ code: 500, msg: 'Internal Server Error' }, null, res);
 		}
 	}
 }
 
-module.exports = CreateLabel;
+module.exports = UpdateTranslations;
