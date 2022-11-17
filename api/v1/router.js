@@ -32,7 +32,7 @@ router.delete('/translations/:key/:locale', (req, res, next) => {
 	req.container.resolve('deleteTranslationApi').handleRequest(req, res).catch(next);
 });
 
-router.get('/translationsForLabel/:labelId', (req, res, next) => {
+router.get('/label-translations/:labelId', (req, res, next) => {
 	req.container.resolve('getTranslationsForLabelApi').handleRequest(req, res).catch(next);
 });
 
@@ -48,7 +48,7 @@ router.get('/lang-list', (req, res, next) => {
 	req.container.resolve('getLangListApi').handleRequest(req, res).catch(next);
 });
 
-router.get('/string', (req, res, next) => {
+router.get('/strings', (req, res, next) => {
 	req.container.resolve('getStringApi').handleRequest(req, res).catch(next);
 });
 

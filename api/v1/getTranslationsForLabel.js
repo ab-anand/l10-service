@@ -13,7 +13,7 @@ class GetTranslationsForLabel {
         }
         try {
             const resp = await this.getTranslationsForLabelLogic.getTranslationsForLabel(labelId);
-            return this.helper.writeResponse(null, { entries: resp }, res);
+            return this.helper.writeResponse(null, { keys: resp }, res);
         } catch (err) {
             console.log(err);
             return this.helper.writeResponse({ code: 500, msg: 'Internal Server Error' }, null, res);
