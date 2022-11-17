@@ -22,7 +22,7 @@ container.register({
 	queueDriver: asValue(middlewares.queueDriver),
 	dbDriverV2: asValue(middlewares.dbDriverV2),
 	// Database
-
+	spannerHelper: asValue(middlewares.spanner.spannerHelper),
 	// cache
 	sharechatWebRedisClient: asValue(middlewares.redis.sharechatWebRedisClient),
 	userPostSentRedisClient: asValue(middlewares.redis.userPostSentRedisClient),
@@ -64,6 +64,7 @@ container.register('postSentRedis', asClass(require('../repository/cache/postSen
 
 // -------------------- REPO -------------------------
 container.register('followFeedRepoV2', asClass(require('../repository/data/followFeedRepoV2'), getScope()));
+container.register('labelsRepo', asClass(require('../repository/data/labelsRepo'), getScope()));
 
 
 //------------------ LOGIC ----------------------
@@ -75,6 +76,12 @@ container.register('showD0PostsLogic', asClass(require('../logic/show-d0-posts-l
 
 //------------------ API -------------------------------
 // Create API after everything
+
+//labels APis
+container.register('getLabelsApi', asClass(require('../api/v1/getLabel'), getScope()));
+container.register('createLabelApi', asClass(require('../api/v1/createLabel'), getScope()));
+container.register('deleteLabelApi', asClass(require('../api/v1/deleteLabel'), getScope()));
+
 container.register('requestType81', asClass(require('../api/route/requestType81'), getScope()));
 
 container.register('getFollowFeedApi', asClass(require('../api/v1/getFollowFeed'), getScope()));
