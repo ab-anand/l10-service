@@ -24,7 +24,23 @@ router.get('/follow-feed/status', (req, res, next) => {
 });
 
 router.get('/lang-list', (req, res, next) => {
-	req.container.resolve('getLangList').handleRequest(req, res).catch(next);
+	req.container.resolve('getLangListApi').handleRequest(req, res).catch(next);
+});
+
+router.get('/get-string', (req, res, next) => {
+	req.container.resolve('getStringApi').handleRequest(req, res).catch(next);
+});
+
+router.post('/add-string', (req, res, next) => {
+	req.container.resolve('addStringApi').handleRequest(req, res).catch(next);
+});
+
+router.delete('/string/:key', (req, res, next) => {
+	req.container.resolve('deleteStringApi').handleRequest(req, res).catch(next);
+});
+
+router.put('/string', (req, res, next) => {
+	req.container.resolve('updateStringApi').handleRequest(req, res).catch(next);
 });
 
 router.get('/', (req, res) => {
