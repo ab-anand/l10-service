@@ -1,6 +1,20 @@
 const express = require('express');
 const router = express.Router();
 
+
+//labels APIs
+router.get('/labels', (req, res, next) => {
+	req.container.resolve('getLabelsApi').handleRequest(req, res).catch(next);
+});
+
+router.post('/label', (req, res, next) => {
+	req.container.resolve('createLabelApi').handleRequest(req, res).catch(next);
+});
+
+router.delete('/label/:labelId', (req, res, next) => {
+	req.container.resolve('deleteLabelApi').handleRequest(req, res).catch(next);
+});
+
 router.get('/followFeed', (req, res, next) => {
 	req.container.resolve('getFollowFeedApi').handleRequest(req, res).catch(next);
 });
