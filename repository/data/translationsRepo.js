@@ -31,6 +31,16 @@ class TranslationsRepo {
 		return res;
 	}
 
+	async batchGetKeys(keys) {
+		const query = {
+			sql: `SELECT * FROM ${this.tableName} WHERE key IN UNNEST(@keys)`,
+			params: {
+				keys: keys
+			}
+		};
+		return await this.spannerHelper.read(this.tableName, {query: query});
+	}
+
 	async update(payload) {
 		const query = {
 			sql: `UPDATE ${this.tableName} SET translation = "${payload.translation}"
