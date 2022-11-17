@@ -1,0 +1,226 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: follow-feed-service-v1
+  namespace: follow-feed-service
+  labels:
+    service: follow-feed-service
+    version: v1
+spec:
+  # replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+       maxSurge: 50%
+       maxUnavailable: 0%
+  selector:
+    matchLabels:
+      service: follow-feed-service
+      version: v1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "3000"
+      labels:
+        cloud: gcp
+        component: service
+        entity: sharechat
+        environment: prod
+        team: engineering
+        pod: sc-consumer-experience
+        id: follow-feed-service
+        platform: sharechat
+        service: follow-feed-service
+        version: v1
+        app: follow-feed-service
+        service-prometheus-track: follow-feed-service
+    spec:
+      affinity:
+        podAntiAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - podAffinityTerm:
+              labelSelector:
+                matchExpressions:
+                - key: service
+                  operator: In
+                  values:
+                  - follow-feed-service
+              topologyKey: "kubernetes.io/hostname"
+            weight: 100
+        nodeAffinity:
+          preferredDuringSchedulingIgnoredDuringExecution:
+          - preference:
+              matchExpressions:
+              - key: cloud.google.com/gke-preemptible
+                operator: Exists
+            weight: 100
+      containers:
+      - name: follow-feed-service
+        image: asia.gcr.io/sharechat-production/follow-feed-service:${ parameters["commitID"] }
+        imagePullPolicy: Always
+        ports:
+        - name: service-port
+          containerPort: 3000
+        readinessProbe:
+          httpGet:
+            path: /v1.0.0
+            port: service-port
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+          timeoutSeconds: 20
+        livenessProbe:
+          httpGet:
+            path: /v1.0.0
+            port: service-port
+          initialDelaySeconds: 30
+          periodSeconds: 10
+          successThreshold: 1
+          failureThreshold: 3
+          timeoutSeconds: 20
+        resources:
+          limits:
+            memory: 1Gi
+            cpu: 1
+          requests:
+            memory: 500Mi
+            cpu: 500m
+        env:
+        - name: GOOGLE_APPLICATION_CREDENTIALS
+          value: /root/.gcp/follow-feed-service-sa.json
+        - name: ACTIVE_ENV
+          value: PRODUCTION
+        - name: CLOUD_PROVIDER
+          value: GCP
+        - name: AWS_ACCESS_KEY_ID
+          valueFrom:
+            secretKeyRef:
+              key: AWS_ACCESS_KEY_ID
+              name: aws-access-creds
+        - name: AWS_SECRET_ACCESS_KEY
+          valueFrom:
+            secretKeyRef:
+              key: AWS_SECRET_ACCESS_KEY
+              name: aws-access-creds
+        volumeMounts:
+        - name: follow-feed-service-sa
+          mountPath: /root/.gcp/
+        lifecycle:
+          preStop:
+            exec:
+              command: ["/bin/sh", "-c", "sleep 30"]
+        terminationMessagePath: /termination-log
+        terminationMessagePolicy: File
+      initContainers:
+      - command:
+        - sh
+        - -c
+        - |
+          mkdir -p  /etc/security/
+          touch /etc/security/limits.conf
+          echo 2097152 > /proc/sys/fs/nr_open
+          ulimit -n 16777216
+          echo "*                soft    nofile          16777216" >> /etc/security/limits.conf
+          echo "*                hard    nofile          16777216" >> /etc/security/limits.conf
+          sysctl -w fs.file-max=16777216
+          sysctl -w fs.nr_open=16777216
+          sysctl -w net.core.somaxconn=32768
+          sysctl -w net.ipv4.tcp_max_syn_backlog=16384
+          sysctl -w net.ipv4.ip_local_port_range='1024 65535'
+          sysctl -w net.ipv4.tcp_rmem='1024 4096 83886080'
+          sysctl -w net.ipv4.tcp_wmem='1024 4096 83886080'
+          sysctl -w net.netfilter.nf_conntrack_tcp_timeout_time_wait=30
+          sysctl -w net.ipv4.tcp_max_tw_buckets=1048576
+          sysctl -w net.ipv4.tcp_fin_timeout=15
+          sysctl -w net.ipv4.route.flush=1
+        image: busybox
+        imagePullPolicy: IfNotPresent
+        name: sysctl
+        resources: {}
+        securityContext:
+          privileged: true
+        terminationMessagePath: /dev/termination-log
+        terminationMessagePolicy: File
+      terminationGracePeriodSeconds: 35
+      volumes:
+      - name: follow-feed-service-sa
+        secret:
+          secretName: follow-feed-service-sa
+      tolerations:
+      - key: "cloud.google.com/gke-preemptible"
+        operator: "Equal"
+        value: "true"
+        effect: "NoSchedule"
+---
+kind: Service
+apiVersion: v1
+metadata:
+  name: follow-feed-service
+  namespace: follow-feed-service
+  annotations:
+    cloud.google.com/neg: '{"exposed_ports":{"80":{}}}'
+spec:
+  selector:
+    service: follow-feed-service
+  ports:
+  - name: http
+    port: 80
+    targetPort: 3000
+---
+apiVersion: autoscaling/v2beta1
+kind: HorizontalPodAutoscaler
+metadata:
+  name: follow-feed-service
+  namespace: follow-feed-service
+spec:
+  minReplicas: 5
+  maxReplicas: 2000
+  metrics:
+  - type: Resource
+    resource:
+      name: cpu
+      targetAverageUtilization: 65
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: follow-feed-service-v1
+---
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: follow-feed-service-internal
+  namespace: follow-feed-service
+spec:
+  hosts:
+  - follow-feed-service.sharechat.internal
+  gateways:
+  - default/ilb-gateway
+  http:
+  - route:
+    - destination:
+        host: follow-feed-service
+---
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx-internal
+  name: follow-feed-service
+  namespace: follow-feed-service
+spec:
+  backend:
+    serviceName: follow-feed-service
+    servicePort: 80
+  rules:
+    -
+      host: follow-feed-service.sharechat.internal
+      http:
+        paths:
+          -
+            backend:
+              serviceName: follow-feed-service
+              servicePort: 80
+            path: /
+---

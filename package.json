@@ -1,0 +1,76 @@
+{
+  "name": "follow-feed-service",
+  "version": "1.0.0",
+  "author": "Arijit Mukhopadhyay",
+  "license": "ISC",
+  "main": "index.js",
+  "standard": {
+    "ignore": [
+      "mock/**.js"
+    ]
+  },
+  "scripts": {
+    "test": "jest --coverage",
+    "start": "node index.js",
+    "lint": "standard --verbose | snazzy",
+    "node-debug": "DEBUG=express* node index.js",
+    "chrome-debug": "node --debug-brk --inspect src/index.js",
+    "coverage": "istanbul cover _mocha $(find ./src -name \"*.spec.js\" -not -path \"./node_modules/*\") ",
+    "cortex": "swagger-jsdoc -d swaggerDefinition.js api/router.js api/**/*.js -o cortex.yaml"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "clearMocks": true,
+    "silent": true,
+    "setupFiles": [
+      "<rootDir>/tests/test-setup.js"
+    ],
+    "testResultsProcessor": "jest-sonar-reporter",
+    "collectCoverage": true
+  },
+  "jestSonar": {
+    "reportPath": "reports",
+    "reportFile": "test-report.xml",
+    "indent": 4
+  },
+  "keywords": [
+    "express",
+    "mongodb",
+    "docker",
+    "microservice"
+  ],
+  "dependencies": {
+    "@google-cloud/bigquery": "^4.5.0",
+    "awilix": "^4.2.3",
+    "aws-sdk": "^2.580.0",
+    "axios": "^0.27.2",
+    "body-parser": "^1.19.0",
+    "cluster-key-slot": "^1.1.0",
+    "cors": "^2.8.5",
+    "e13n-client-library": "^2.1.1",
+    "express": "^4.17.1",
+    "hashids": "^2.1.0",
+    "helmet": "^3.21.2",
+    "ioredis": "^4.14.1",
+    "lodash": "^4.17.15",
+    "morgan": "^1.9.1",
+    "mtpl-bots": "1.0.0",
+    "newrelic": "^6.2.0",
+    "node-cron": "^2.0.3",
+    "platform-tracer": "^1.0.4",
+    "prom-scripts": "^3.0.1",
+    "queue-driver": "^2.2.1",
+    "sharechat-sdk": "^3.0.0",
+    "sharechat-utils": "^1.1.0",
+    "swagger-jsdoc": "^4.0.0",
+    "swagger-ui-express": "^4.1.4",
+    "db-driver-v2-client": "^4.12.0",
+    "tracer-client": "^3.3.3"
+  },
+  "devDependencies": {
+    "eslint": "^7.4.0",
+    "jest": "^26.6.3",
+    "jest-sonar-reporter": "^2.0.0",
+    "supertest": "^4.0.2"
+  }
+}
