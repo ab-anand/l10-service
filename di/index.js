@@ -66,12 +66,16 @@ container.register('postSentRedis', asClass(require('../repository/cache/postSen
 container.register('followFeedRepoV2', asClass(require('../repository/data/followFeedRepoV2'), getScope()));
 container.register('labelsRepo', asClass(require('../repository/data/labelsRepo'), getScope()));
 container.register('translationsRepo', asClass(require('../repository/data/translationsRepo'), getScope()));
+container.register('stringsRepo', asClass(require('../repository/data/stringsRepo'), getScope()));
 
 
 //------------------ LOGIC ----------------------
 container.register('fetchFollowFeedLogic', asClass(require('../logic/fetchFollowFeedLogic'), getScope()));
 container.register('addToFollowFeedLogic', asClass(require('../logic/addToFollowFeedLogic'), getScope()));
 container.register('showD0PostsLogic', asClass(require('../logic/show-d0-posts-logic'), getScope()));
+container.register('fetchStringLogic', asClass(require('../logic/fetchStringLogic'), getScope()));
+container.register('addStringLogic', asClass(require('../logic/addStringLogic'), getScope()));
+container.register('updateStringLogic', asClass(require('../logic/updateStringLogic'), getScope()));
 //-----------------------------------------------
 
 
@@ -102,6 +106,10 @@ container.register('getFollowFeedApiV2', asClass(require('../api/v2/getFollowFee
 container.register('addPostsInFollowFeedApi', asClass(require('../api/v2/addPostsInFollowFeed'), getScope()));
 
 container.register('addToFollowFeedAPI', asClass(require('../api/v2/addToFollowFeed'), getScope()));
+container.register('getStringApi', asClass(require('../api/v1/getString'), getScope()));
+container.register('addStringApi', asClass(require('../api/v1/addString'), getScope()));
+container.register('deleteStringApi', asClass(require('../api/v1/deleteString'), getScope()));
+container.register('updateStringApi', asClass(require('../api/v1/updateString'), getScope()));
 //------------------------------------------------------
 
 container.register('container', asValue(container));
