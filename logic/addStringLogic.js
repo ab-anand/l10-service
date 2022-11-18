@@ -17,6 +17,7 @@ class AddStringLogic {
                     sentence: payload.sentence,
                     added_on: added_on + (labels.length - idx)
                 }
+                idx += 1;
                 try {
                     await this.stringsRepo.add(addObj);
                 } catch(err) {
