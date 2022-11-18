@@ -8,6 +8,13 @@ class FetchStringLogic {
 
     async fetchString(key, limit, offset) {
         const data = await this.stringsRepo.getAllStrings(key, limit, offset);
+        if (data.length === 0) {
+            return {
+                entries: [],
+                offset: null
+            }
+        }
+
         let responseMap = new Map();
         let keyMap = new Map();
         let labelArrMap = new Map();
